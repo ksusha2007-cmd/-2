@@ -1,0 +1,101 @@
+import urllib.request
+import re
+
+class MyFilyk:
+    def __init__(self, filename, mode):
+        self.filename = filename
+        self.mode = mode
+
+    def read(self):
+        """Чтение из файла"""
+        if self.mode != "read":
+            print("Ошибка: файл не в режиме чтения!")
+            return None
+
+        try:
+            with open(self.filename, 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            print(f"Файл {self.filename} не найден!")
+            return None
+
+    def write(self, TXT):
+        """Запись в файл"""
+        if self.mode not in ["write", "append"]:
+            print("Ошибка: файл не в режиме записи!")
+            return None
+
+        try:
+            # Выбираем режим: w - перезапись, a - добавление
+            mode_char = 'w' if self.mode == "write" else 'a'
+            with open(self.filename, mode_char, encoding='utf-8') as f:
+                f.write(text)
+            return f"Успешно записано: {TXT}"
+        except:
+            print("Ошибка записи в файл!")
+            return None
+
+    def read_url(self):
+        """Чтение веб-страницы"""
+        if self.mode != "url":
+            print("Ошибка: не URL режим!")
+            return None
+
+        try:
+            # Открываем URL и читаем содержимое
+            with urllib.request.urlopen(self.filename) as response:
+                html = response.read().decode('utf-8')
+            return html
+        except:
+            print("Ошибка при чтении URL!")
+            return None
+
+    def count_urls(self):
+        """Считает количество ссылок на странице"""
+        html = self.read_url()
+        if html is None:
+            return 0
+
+        # Ищем все http и https ссылки в тексте
+        urls = re.findall(r'https?://[^\s]+', html)
+        return len(urls)
+
+    def write_url(self, output_file):
+        """Сохраняет содержимое страницы в файл"""
+        html = self.read_url()
+        if html is None:
+            return "Ошибка: не удалось прочитать URL"
+
+        try:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(html)
+            return f"Страница сохранена в {output_file}"
+        except:
+            return "Ошибка при сохранении файла"
+
+
+# ПРИМЕРЫ ИСПОЛЬЗОВАНИЯ:
+
+print("Чтение файла")
+file1 = MyFilyk("TXT.txt", "read")
+text = file1.read()
+print(text)
+
+print("\nЗапись в файл")
+file2 = MyFilyk("TXT.txt", "write")
+result = file2.write("ИНФОРМАЦИОННАЯ БЕЗОПАААСНОООСТЬ")
+print(result)
+
+print("\nЧтение веб-страницы")
+file3 = MyFilyk("https://pycode.ru/python_tasks_5.html", "url")
+page_content = file3.read_url()
+if page_content:
+    print(f"Прочитано символов: {len(page_content)}")
+
+print("\nПодсчет ссылок")
+count = file3.count_urls()
+print(f"Найдено ссылок: {count}")
+
+print("\nСохранение страницы")
+result = file3.write_url("webpage.txt")
+print(result)
