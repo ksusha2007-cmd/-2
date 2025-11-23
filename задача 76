@@ -1,0 +1,36 @@
+import csv
+import matplotlib.pyplot as plt
+
+try:
+    file = open('opendata.stat.txt', 'r', encoding='utf-8')
+    reader = csv.DictReader(file)
+
+    # 2. Ищем пенсии за 2018 год
+    pensions = []
+    for row in reader:
+        if (row['name'] == 'Средняя пенсия' and
+            row['region'] == 'Забайкальский край' and
+            '2018' in row['date']):
+            pensions.append(float(row['value']))
+
+    file.close()
+
+    if not pensions:
+        print("Данные не найдены!")
+        exit()
+
+    # 4. Считаем среднюю пенсию
+    average = sum(pensions) / len(pensions)
+    print(f"Средняя пенсия: {average:.2f} рублей")
+
+
+    plt.plot(pensions, marker='o')
+    plt.title('Пенсии в Забайкальском крае (2018)')
+    plt.ylabel('Рубли')
+    plt.grid(True)
+    plt.show()
+
+except FileNotFoundError:
+    print("Файл не найден!")
+except Exception as e:
+    print(f"Ошибка: {e}")
