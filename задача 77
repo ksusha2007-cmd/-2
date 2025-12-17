@@ -7,7 +7,6 @@ class MyFilyk:
         self.mode = mode
 
     def read(self):
-        """Чтение из файла"""
         if self.mode != "read":
             print("Ошибка: файл не в режиме чтения!")
             return None
@@ -20,13 +19,11 @@ class MyFilyk:
             return None
 
     def write(self, TXT):
-        """Запись в файл"""
         if self.mode not in ["write", "append"]:
             print("Ошибка: файл не в режиме записи!")
             return None
 
         try:
-            # Выбираем режим: w - перезапись, a - добавление
             mode_char = 'w' if self.mode == "write" else 'a'
             with open(self.filename, mode_char, encoding='utf-8') as f:
                 f.write(text)
@@ -36,7 +33,6 @@ class MyFilyk:
             return None
 
     def read_url(self):
-        """Чтение веб-страницы"""
         if self.mode != "url":
             print("Ошибка: не URL режим!")
             return None
@@ -51,12 +47,10 @@ class MyFilyk:
             return None
 
     def count_urls(self):
-        """Считает количество ссылок на странице"""
         html = self.read_url()
         if html is None:
             return 0
 
-        # Ищем все http и https ссылки в тексте
         urls = re.findall(r'https?://[^\s]+', html)
         return len(urls)
 
